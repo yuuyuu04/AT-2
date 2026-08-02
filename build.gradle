@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // JUnit 5
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+
+    // Для параметризованных тестов
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.0'
+}
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+}
+
+// Задача: вывод сообщения после тестов
+tasks.register('finalMessage') {
+    dependsOn test
+    doLast {
+        println "================================"
+        println "Test run is over"
+        println "================================"
+    }
+}
+
+test.finalizedBy finalMessage
