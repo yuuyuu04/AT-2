@@ -224,8 +224,8 @@ void testFindMax() {
         System.out.println("================================");
         System.out.println("Test method start");
 
-        String[] input = {"One", "Two", "Zero"};
-        String[] expected = {"Zero", "Two", "One"};
+        String[] input = {"One", "Two", "Three", "Zero"};
+        String[] expected = {"Zero", "Three", "Two", "One"};
 
         assertArrayEquals(expected, Tests.reverse(input));
         assertArrayEquals(new String[]{"One", "Two", "Zero"}, input);
