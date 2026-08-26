@@ -24,6 +24,12 @@ test {
         events "passed", "skipped", "failed"
         showStandardStreams = true
     }
+
+    // ✅ ФИЛЬТРАЦИЯ ПО ТЕГАМ
+    filter {
+        // Включаем тесты, которые содержат аннотацию с указанным тегом
+        includeTestsMatching "*"
+    }
 }
 
 // Задача: вывод сообщения после тестов
@@ -37,3 +43,40 @@ tasks.register('finalMessage') {
 }
 
 test.finalizedBy finalMessage
+
+// ============================================================
+// ЗАДАЧИ ДЛЯ ЗАПУСКА ОТДЕЛЬНЫХ ГРУПП ТЕСТОВ
+// ============================================================
+
+// Запуск только тестов с тегом "task2"
+tasks.register('testTask2', Test) {
+    useJUnitPlatform {
+        includeTags 'task2'
+    }
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+}
+
+// Запуск только тестов с тегом "failing"
+tasks.register('testFailing', Test) {
+    useJUnitPlatform {
+        includeTags 'failing'
+    }
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+}
+
+// Запуск всех тестов (без фильтрации)
+tasks.register('runAllTests', Test) {
+    useJUnitPlatform {
+        includeTags 'task2', 'failing'
+    }
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+}
