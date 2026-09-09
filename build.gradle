@@ -15,6 +15,18 @@ dependencies {
 
     // Для параметризованных тестов
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.0'
+
+    // REST Assured Source: https://mvnrepository.com/artifact/io.rest-assured/rest-assured
+    implementation("io.rest-assured:rest-assured:5.5.6")
+
+    // Jackson (для работы с JSON)
+    implementation 'io.rest-assured:json-path:5.4.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    // Для авторизации Basic Auth
+    implementation 'io.rest-assured:rest-assured-common:5.4.0'
+
+    // AssertJ (для красивых ассертов)
+    implementation 'org.assertj:assertj-core:3.24.2'
 }
 
 test {
@@ -31,7 +43,30 @@ test {
         includeTestsMatching "*"
     }
 }
+// ============================================================
+//  Gradle-задача для запуска API-тестов
+// ============================================================
 
+tasks.register('apiTests', Test) {
+    useJUnitPlatform()
+
+    filter {
+        includeTestsMatching "*ApiTests"
+        includeTestsMatching "*SwaggerApiTests"
+        includeTestsMatching "*api"
+    }
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+
+    doLast {
+        println "================================"
+        println "API Tests run is over"
+        println "================================"
+    }
+}
 // Задача: вывод сообщения после тестов
 tasks.register('finalMessage') {
     dependsOn test
