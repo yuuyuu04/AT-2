@@ -135,7 +135,7 @@ public class ATestsnum6 {
                 .log().uri()
                 .contentType("application/json")
                 .body(Map.of(
-                        "price", 99.99
+                        "price", 19.99
                 ))
                 .when()
                 .post("/goods/add")
