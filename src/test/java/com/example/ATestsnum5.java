@@ -46,7 +46,7 @@ public class ATestsnum5 {
     // 1.1: GET /goods/list с given()/when()/then()
     // ============================================================
     @Test
-    @DisplayName("1.1 GET /goods/list - проверка кода 200 (given/when/then)")
+    @DisplayName("1.1 GET /goods/list - проверка кода 200 ")
     void testGoodsListWithGivenWhenThen() {
         given()
                 .auth().basic(USERNAME, PASSWORD)      // ← Basic Auth
@@ -57,8 +57,9 @@ public class ATestsnum5 {
                 .get(GOODS_LIST_ENDPOINT)
                 .then()
                 .log().body()
-                .statusCode(200)                        // ← проверяем код ответа
-                .body("goods", notNullValue());          // ← проверяем, что data есть
+                .statusCode(200)
+                .body("goods", notNullValue())
+                .body("goods", empty());
     }
 
     // ============================================================
@@ -94,6 +95,8 @@ public class ATestsnum5 {
         assertThat(response.jsonPath().getList("goods"))
                 .as("Проверка наличия поля goods")
                 .isNotNull();
+
+        assertThat(response.jsonPath().getList("goods")).isEmpty();
     }
 
     // ============================================================
@@ -119,7 +122,7 @@ public class ATestsnum5 {
                 .post(GOODS_ADD_ENDPOINT)
                 .then()
                 .log().body()
-                .statusCode(200);                         // ← 200 Success
+                .statusCode(200);
 
         // Шаг 2: Получаем список товаров через GET /goods/list
         given()
