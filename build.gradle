@@ -115,3 +115,37 @@ tasks.register('runAllTests', Test) {
         showStandardStreams = true
     }
 }
+
+dependencies {
+    // JUnit 5
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+
+    // AssertJ
+    implementation 'org.assertj:assertj-core:3.24.2'
+
+    // REST Assured (для задачи 3.5)
+    implementation 'io.rest-assured:rest-assured:5.5.6'
+}
+
+// Задача для запуска UI-тестов
+tasks.register('uiTests', Test) {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+    filter {
+        includeTestsMatching "*SeleniumTests"
+        includeTestsMatching "*SelenideTests"
+        includeTestsMatching "*ExtendedTests"
+    }
+}
+dependencies {
+
+
+    // Selenide (Задача 2, 3)
+    implementation 'com.codeborne:selenide:6.19.1'
+
+
+}
+
