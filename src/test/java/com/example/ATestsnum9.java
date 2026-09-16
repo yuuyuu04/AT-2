@@ -61,7 +61,7 @@ public class ATestsnum9 {
                     .log().ifValidationFails()
                     .statusCode(200);
 
-            System.out.println("🗑️ Товар с ID " + createdProductId + " удалён");
+            System.out.println("🗑Товар с ID " + createdProductId + " удалён");
             createdProductId = null;
         }
 
@@ -89,7 +89,7 @@ public class ATestsnum9 {
             }
         }
 
-        System.out.println("🔍 Доступные цены: " + prices);
+        System.out.println("Доступные цены: " + prices);
 
         //   НАХОДИМ ПОДХОДЯЩИЙ ТОВАР (цена × 3 ≤ 300)
         int suitableIndex = -1;
@@ -104,7 +104,7 @@ public class ATestsnum9 {
                 "Не найден товар, у которого 3 шт ≤ 300 руб. Все цены: " + prices);
 
         double expectedPrice = prices.get(suitableIndex);
-        System.out.println("🔍 Выбран товар с ценой: " + expectedPrice
+        System.out.println("Выбран товар с ценой: " + expectedPrice
                 + " (3 шт = " + (expectedPrice * 3) + ")");
 
         //   ДОБАВЛЯЕМ ТОВАР 3 РАЗА В КОРЗИНУ
@@ -122,7 +122,7 @@ public class ATestsnum9 {
 
         //   ПРОВЕРЯЕМ СУММУ
         double total = Double.parseDouble($("#total-price").getText());
-        System.out.println("🔍 Сумма заказа: " + total);
+        System.out.println("Сумма заказа: " + total);
         Assertions.assertTrue(total <= 300,
                 "Сумма должна быть ≤ 300, но была " + total);
 
@@ -162,8 +162,8 @@ public class ATestsnum9 {
         // Получаем фактическую сумму
         double actualTotal = Double.parseDouble($("#total-price").getText());
 
-        System.out.println("🔍 Ожидаемая сумма: " + expectedTotal);
-        System.out.println("🔍 Фактическая сумма: " + actualTotal);
+        System.out.println("Ожидаемая сумма: " + expectedTotal);
+        System.out.println("Фактическая сумма: " + actualTotal);
 
         Assertions.assertEquals(expectedTotal, actualTotal, 0.01,
                 "Сумма в корзине должна быть " + expectedTotal);
@@ -205,7 +205,7 @@ public class ATestsnum9 {
         String newName = "Edited_" + uniqueId;
 
         createdProductId = createProductViaApi(originalName, 100.0);
-        System.out.println("🔍 Товар создан с ID: " + createdProductId);
+        System.out.println("Товар создан с ID: " + createdProductId);
 
         //   Логинимся в админку
         loginToAdmin();
@@ -236,14 +236,15 @@ public class ATestsnum9 {
                 .response();
 
         String actualName = check.jsonPath().getString("name");
-        System.out.println("🔍 Имя в API после обновления: " + actualName);
+        System.out.println("Имя в API после обновления: " + actualName);
 
         Assertions.assertEquals(newName, actualName,
                 "Имя товара должно было измениться на " + newName);
 
-        System.out.println("  Изменения применены: " + originalName + " → " + newName);
+        System.out.println(" Изменения применены: " + originalName + " → " + newName);
     }
-    // ============================================================
+
+// ============================================================
 // ВСПОМОГАТЕЛЬНЫЙ МЕТОД: создание товара через API
 // ============================================================
     private String createProductViaApi(String name, double price) {
@@ -259,7 +260,7 @@ public class ATestsnum9 {
                 .response();
 
         String id = String.valueOf(response.jsonPath().getInt("data.id"));
-        System.out.println("🔍 Создан товар '" + name + "' через API с ID: " + id);
+        System.out.println("Создан товар '" + name + "' через API с ID: " + id);
         return id;
     }
     // ============================================================

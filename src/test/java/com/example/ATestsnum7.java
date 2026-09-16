@@ -41,13 +41,11 @@ public class ATestsnum7 {
         // Открываем браузер
         driver = new ChromeDriver();
 
-        // Неявное ожидание (для всех элементов)
+        // ожидание
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-
-        // Явное ожидание (для конкретных условий)
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        // Разворачиваем на весь экран
+
         driver.manage().window().maximize();
     }
 
@@ -156,9 +154,9 @@ public class ATestsnum7 {
         // (или появилось сообщение об ошибке)
         String currentUrl = driver.getCurrentUrl();
 
-        // Если URL всё ещё содержит "/login" — вход не выполнен
+        // Если мы все еще на странице /login, то вход не выполнен
         boolean stayedOnLogin = currentUrl.contains("/login");
-        // Или проверяем наличие сообщения об ошибке
+        //проверяем наличие сообщения об ошибке
         boolean hasErrorMessage = !driver.findElements(
                 By.cssSelector(".alert-danger, .error, .alert")
         ).isEmpty();
@@ -168,7 +166,7 @@ public class ATestsnum7 {
                 .isTrue();
     }
 
-    // ============================================================
+// ============================================================
 // 1.4: Проверить сохранение товаров в корзине после обновления
 // ============================================================
     @Test
@@ -201,13 +199,13 @@ public class ATestsnum7 {
         // 6. Обновляем страницу
         driver.navigate().refresh();
 
-        // 7. ✅ ДОБАВЛЕНО: ждём, пока кнопка корзины снова станет доступной
+        // 7. ждём, пока кнопка корзины снова станет доступной
         WebElement cartButtonAfterRefresh = wait.until(
                 ExpectedConditions.elementToBeClickable(By.id("open-cart-btn"))
         );
         cartButtonAfterRefresh.click();
 
-        // 8. ✅ ДОБАВЛЕНО: ждём, пока корзина снова откроется
+        // 8. ждём, пока корзина снова откроется
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("cart-items")));
 
         // 9. Проверяем, что товар всё ещё в корзине

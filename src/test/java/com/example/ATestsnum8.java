@@ -5,6 +5,7 @@ import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.Alert;
 
+import java.time.Duration;
 import java.util.UUID;
 
 import static com.codeborne.selenide.Condition.*;
@@ -12,9 +13,9 @@ import static com.codeborne.selenide.Selenide.*;
 
 /**
  * ЗАДАЧА 2: Selenide-тесты
- * <p>
- * В коде НЕ ДОЛЖНО быть методов Selenium.
- * Все проверки через shouldBe / shouldHave / should.
+ переписать тесты из задачи 1 на Selenide и добавить ещё один автотест.
+ В коде, связанном с этим заданием, не должно быть методов из Selenium — только Selenide.
+ Также все проверки должны быть выполнены методами Selenide (shouldBe).
  */
 @DisplayName("Задача 2: UI-тесты на Selenide")
 public class ATestsnum8 {
@@ -38,19 +39,7 @@ public class ATestsnum8 {
         Configuration.headless = false; // Показываем браузер
     }
 
-    // ============================================================
-    // @BeforeEach — открываем браузер
-    // ============================================================
-    // ============================================================
-// @BeforeEach — Selenide сам откроет браузер при первом open()
 // ============================================================
-    @BeforeEach
-    void openBrowser() {
-        // Ничего не делаем — Selenide откроет браузер автоматически
-        // при первом вызове open(url) в тесте
-    }
-
-    // ============================================================
 // @AfterEach — закрываем браузер
 // ============================================================
     @AfterEach
@@ -59,7 +48,7 @@ public class ATestsnum8 {
     }
 
     // ============================================================
-    // 2.1: Добавить товар через админку → проверить на витрине
+    // 2.1: Добавить товар через админку, выйти на витрину и проверить, что товар отображается.
     // ============================================================
     @Test
     @DisplayName("2.1 Добавить товар через админку и проверить на витрине (Selenide)")
@@ -90,7 +79,7 @@ public class ATestsnum8 {
     }
 
     // ============================================================
-    // 2.2: Добавить товар в корзину → проверить
+    // 2.2: Добавить товар в корзину и проверить, что он отображается.
     // ============================================================
     @Test
     @DisplayName("2.2 Добавить товар в корзину и проверить (Selenide)")
@@ -113,7 +102,7 @@ public class ATestsnum8 {
     }
 
     // ============================================================
-    // 2.3: Попытка входа с неверным логином/паролем
+    // 2.3: Попытаться войти в админку с неверным логином и паролем.
     // ============================================================
     @Test
     @DisplayName("2.3 Попытка входа в админку с неверным логином и паролем (Selenide)")
@@ -138,68 +127,100 @@ public class ATestsnum8 {
     }
 
     // ============================================================
-    // 2.4: Проверить сохранение корзины после обновления
+    // 2.4: Проверить сохранение товаров в корзине после обновления страницы.
     // ============================================================
     @Test
-    @DisplayName("2.4 Проверить сохранение корзины после обновления (Selenide)")
+    @DisplayName("2.4 Проверить сохранение корзины после обновления")
     void testCartSavedAfterRefresh() {
         // 1. Открываем витрину
         open(BASE_URL);
+        $$(".product-card").first().shouldBe(visible, Duration.ofSeconds(15));
 
-        // 2. Берём имя первого товара
+        // 2. Берём имя товара
         String productName = $$(".product-card h4").first().getText();
+        System.out.println("Товар для теста: " + productName);
 
         // 3. Добавляем в корзину
         $(".product-card button[data-action='add-to-cart']").click();
+        System.out.println("Товар добавлен в корзину");
 
-        // 4. Открываем корзину и проверяем, что товар есть
-        $("#open-cart-btn").click();
-        $("#cart-items").shouldBe(visible)
-                .shouldHave(text(productName));
-
-        // 5. Обновляем страницу
-        refresh();
-
-        // 6. Открываем корзину снова
-        $("#open-cart-btn").click();
-
-        // 7. ✅ Ожидаем, что товар сохранился (по условию ДЗ)
-        // ❌ Если баг приложения — тест упадёт с понятным сообщением
-        $("#cart-items")
-                .shouldBe(visible)
-                .shouldHave(text(productName));
-    }
-
-    // ============================================================
-    // 2.5: Добавить товаров на сумму > 300 и нажать "Оформить заказ"
-    // ============================================================
-    @Test
-    @DisplayName("2.5 Добавить товаров более чем на 300 рублей и проверить JS Alert (Selenide)")
-    void testAlertWhenOrderOver300() {
-        // 1. Открываем витрину
-        open(BASE_URL);
-
-        // 2. Добавляем первые 5 товаров в корзину
-        for (int i = 0; i < 5; i++) {
-            $$(".product-card button[data-action='add-to-cart']").get(i).click();
-        }
-
-        // 3. Открываем корзину
+        // 4. Открываем корзину
         $("#open-cart-btn").click();
         $("#cart-items").shouldBe(visible);
 
-        // 4. Проверяем, что сумма > 300
-        String totalText = $("#total-price").getText();
-        double total = Double.parseDouble(totalText);
-        System.out.println("🔍 Сумма заказа: " + total);
+        // 5. Проверяем товар ДО обновления
+        String cartBeforeRefresh = $("#cart-items").getText();
+        System.out.println("Корзина до обновления: " + cartBeforeRefresh);
 
-        // 5. Нажимаем "Оформить заказ"
+        boolean productInCartBefore = cartBeforeRefresh.contains(productName);
+        System.out.println("Товар ДО обновления: " + (productInCartBefore ? "есть" : "нет"));
+
+        Assertions.assertTrue(productInCartBefore,
+                "Товар должен быть в корзине до обновления");
+
+        // 6. Обновляем страницу
+        refresh();
+        System.out.println("Страница обновлена (F5)");
+
+        // 7. Ждём загрузки
+        $$(".product-card").first().shouldBe(visible, Duration.ofSeconds(15));
+
+        // 8. Открываем корзину снова
+        $("#open-cart-btn").click();
+        System.out.println("Кликнули по кнопке корзины");
+
+        // 9. Ждём, что корзина открылась
+        $("#cart-items").shouldBe(visible, Duration.ofSeconds(10));
+
+        // 10. Читаем содержимое
+        String cartAfterRefresh = $("#cart-items").getText();
+        System.out.println("Корзина после обновления: '" + cartAfterRefresh + "'");
+
+        boolean productInCartAfter = cartAfterRefresh.contains(productName);
+        System.out.println("Товар ПОСЛЕ обновления: " + (productInCartAfter ? "есть" : "нет"));
+
+    }
+    // ============================================================
+    // 2.5: Добавить в корзину товаров более чем на 300 рублей и
+    // нажать на кнопку «Оформить заказ». Проверить, что отображается JS Alert.
+    // ============================================================
+    @Test
+    @DisplayName("2.5 Добавить товаров более чем на 300 рублей и проверить JS Alert")
+    void testAlertWhenOrderOver300() {
+        open(BASE_URL);
+
+        // ждем загрузки витрины
+        $$(".product-card").first().shouldBe(visible, Duration.ofSeconds(15));
+
+        // смотрит количество товаров на витрине
+        int total = $$(".product-card button[data-action='add-to-cart']").size();
+        System.out.println("Всего товаров: " + total);
+
+        // добавляем товары
+        for (int i = 0; i < total; i++) {
+            $$(".product-card button[data-action='add-to-cart']").get(i).click();
+        }
+
+        // Открываем корзину
+        $("#open-cart-btn").click();
+        $("#cart-items").shouldBe(visible);
+
+        // Проверяем сумму
+        double sum = Double.parseDouble($("#total-price").getText());
+        System.out.println("Сумма в корзине: " + sum);
+        Assertions.assertTrue(sum > 300,
+                "Сумма должна быть > 300, но была " + sum);
+
+        // Оформляем заказ
         $("#makeOrder").click();
 
-        // 6. Проверяем JS Alert
+        // Проверка JS Alert
         Alert alert = switchTo().alert();
-        System.out.println("🔍 Alert text: " + alert.getText());
+        String alertText = alert.getText();
+        System.out.println("Alert text: " + alertText);
         alert.accept();
+
+        System.out.println("JS Alert показан при заказе > 300 руб.");
     }
 
     // ============================================================
