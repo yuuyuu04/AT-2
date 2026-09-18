@@ -1,22 +1,15 @@
 package com.example;
 
-import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.Selenide;
+
 import com.codeborne.selenide.SelenideElement;
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.Alert;
+
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
-import static io.restassured.RestAssured.given;
 
 public class ATestsnum10 {
     private static final String BASE_URL = "http://localhost:8080";
