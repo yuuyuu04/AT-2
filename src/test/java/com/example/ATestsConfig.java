@@ -10,7 +10,7 @@ public class ATestsConfig {
 
     private static final Properties properties = new Properties();
 
-    // Статический блок — загружаем конфиг ОДИН РАЗ при старте
+    // загружаем конфиг
     static {
         try (InputStream input = ATestsConfig.class
                 .getClassLoader()
