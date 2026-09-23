@@ -98,7 +98,7 @@ class MainPage {
         return priceStr != null ? Double.parseDouble(priceStr) : 0;
     }
 
-    // ✅ Метод check() — возвращает PageAssert
+    // Метод check() — возвращает PageAssert
     public MainPageAssert check() {
         return new MainPageAssert(this);
     }

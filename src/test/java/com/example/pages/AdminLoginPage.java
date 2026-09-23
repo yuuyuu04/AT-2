@@ -57,7 +57,7 @@ class AdminLoginPage {
         return this;
     }
 
-    // ✅ Метод check()
+    // Метод check()
     public AdminLoginPageAssert check() {
         return new AdminLoginPageAssert(this);
     }

@@ -73,7 +73,7 @@ class MainPageAssert extends AbstractAssert<MainPageAssert, MainPage> {
         return this;
     }
 
-    // ✅ Метод page() — возвращает страницу
+    // Метод page() — возвращает страницу
     public MainPage page() {
         return actual;
     }
