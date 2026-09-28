@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'io.qameta.allure' version '2.11.2'   // ✅ Allure-плагин
 }
 
 group = 'com.example'
@@ -13,139 +14,47 @@ dependencies {
     // JUnit 5
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
 
-    // Для параметризованных тестов
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.0'
+    // Selenide
+    implementation 'com.codeborne:selenide:6.19.1'
 
-    // REST Assured Source: https://mvnrepository.com/artifact/io.rest-assured/rest-assured
-    implementation("io.rest-assured:rest-assured:5.5.6")
+    // Selenide + Allure
+    implementation 'io.qameta.allure:allure-selenide:2.24.0'
 
-    // Jackson (для работы с JSON)
-    implementation 'io.rest-assured:json-path:5.4.0'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
-    // Для авторизации Basic Auth
-    implementation 'io.rest-assured:rest-assured-common:5.4.0'
+    // REST Assured + Allure
+    implementation 'io.rest-assured:rest-assured:5.5.6'
+    implementation 'io.qameta.allure:allure-rest-assured:2.24.0'
 
-    // AssertJ (для красивых ассертов)
+    // AssertJ
     implementation 'org.assertj:assertj-core:3.24.2'
+}
+
+allure {
+    version = '2.24.0'
+    autoconfigure = true
+    aspectjweaver = true
+    useJUnit5 {
+        version = '2.24.0'
+    }
+}
+
+//  задача с параметрами
+tasks.register('allureServeLocal', Exec) {
+    group = 'verification'
+    description = 'Allure serve на localhost:8090'
+
+    //dependsOn test
+
+    commandLine 'allure', 'serve',
+            'build/allure-results',
+            '--host', 'localhost',
+            '--port', '8090'
 }
 
 test {
     useJUnitPlatform()
-
     testLogging {
         events "passed", "skipped", "failed"
         showStandardStreams = true
     }
-
-    // ✅ ФИЛЬТРАЦИЯ ПО ТЕГАМ
-    filter {
-        // Включаем тесты, которые содержат аннотацию с указанным тегом
-        includeTestsMatching "*"
-    }
-}
-// ============================================================
-//  Gradle-задача для запуска API-тестов
-// ============================================================
-
-tasks.register('apiTests', Test) {
-    useJUnitPlatform()
-
-    filter {
-        includeTestsMatching "*ApiTests"
-        includeTestsMatching "*SwaggerApiTests"
-        includeTestsMatching "*api"
-    }
-
-    testLogging {
-        events "passed", "skipped", "failed"
-        showStandardStreams = true
-    }
-
-    doLast {
-        println "================================"
-        println "API Tests run is over"
-        println "================================"
-    }
-}
-// Задача: вывод сообщения после тестов
-tasks.register('finalMessage') {
-    dependsOn test
-    doLast {
-        println "================================"
-        println "Test run is over"
-        println "================================"
-    }
-}
-
-test.finalizedBy finalMessage
-
-// ============================================================
-// ЗАДАЧИ ДЛЯ ЗАПУСКА ОТДЕЛЬНЫХ ГРУПП ТЕСТОВ
-// ============================================================
-
-// Запуск только тестов с тегом "task2"
-tasks.register('testTask2', Test) {
-    useJUnitPlatform {
-        includeTags 'task2'
-    }
-    testLogging {
-        events "passed", "skipped", "failed"
-        showStandardStreams = true
-    }
-}
-
-// Запуск только тестов с тегом "failing"
-tasks.register('testFailing', Test) {
-    useJUnitPlatform {
-        includeTags 'failing'
-    }
-    testLogging {
-        events "passed", "skipped", "failed"
-        showStandardStreams = true
-    }
-}
-
-// Запуск всех тестов (без фильтрации)
-tasks.register('runAllTests', Test) {
-    useJUnitPlatform {
-        includeTags 'task2', 'failing'
-    }
-    testLogging {
-        events "passed", "skipped", "failed"
-        showStandardStreams = true
-    }
-}
-
-dependencies {
-    // JUnit 5
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-
-    // AssertJ
-    implementation 'org.assertj:assertj-core:3.24.2'
-
-    // REST Assured (для задачи 3.5)
-    implementation 'io.rest-assured:rest-assured:5.5.6'
-}
-
-// Задача для запуска UI-тестов
-tasks.register('uiTests', Test) {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-        showStandardStreams = true
-    }
-    filter {
-        includeTestsMatching "*SeleniumTests"
-        includeTestsMatching "*SelenideTests"
-        includeTestsMatching "*ExtendedTests"
-    }
-}
-dependencies {
-
-
-    // Selenide (Задача 2, 3)
-    implementation 'com.codeborne:selenide:6.19.1'
-
-
 }
 

@@ -1,6 +1,7 @@
 package com.example.pages;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 
 import java.time.Duration;
 
@@ -37,15 +38,13 @@ class AdminPage {
         return $("input[value='" + value + "']");
     }
 
-    // ============================================================
-    // МЕТОДЫ
-    // ============================================================
-
+    @Step("Дождаться загрузки админки")
     public AdminPage shouldBeLoaded() {
         nameField().shouldBe(visible, Duration.ofSeconds(15));
         return this;
     }
 
+    @Step("Создать товар '{name}' с ценой {price}")
     public AdminPage addProduct(String name, double price) {
         nameField().setValue(name);
         priceField().setValue(String.valueOf(price));
@@ -53,16 +52,19 @@ class AdminPage {
         return this;
     }
 
+    @Step("Изменить имя товара с ID {id} на '{newName}'")
     public AdminPage changeName(String id, String newName) {
         nameInputById(id).setValue(newName);
         return this;
     }
 
+    @Step("Клик 'Сохранить' для товара с ID {id}")
     public AdminPage clickUpdate(String id) {
         updateButtonById(id).click();
         return this;
     }
 
+    @Step("Найти ID товара по имени '{name}'")
     public String findIdByName(String name) {
         String id = nameInputByValue(name).getAttribute("id");
         return id != null ? id.replace("nm-", "") : null;

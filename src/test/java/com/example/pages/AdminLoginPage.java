@@ -1,6 +1,7 @@
 package com.example.pages;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 
 import java.time.Duration;
 
@@ -8,10 +9,6 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 
-/**
- * PageObject страницы логина в админку.
- * 3 элемента: логин, пароль, кнопка.
- */
 class AdminLoginPage {
 
     public SelenideElement usernameField() {
@@ -25,31 +22,33 @@ class AdminLoginPage {
     public SelenideElement loginButton() {
         return $("button.primary");
     }
-    // ============================================================
-    // МЕТОДЫ (Builder)
-    // ============================================================
 
+    @Step("Открыть страницу логина '{url}/login'")
     public AdminLoginPage openPage(String url) {
         open(url + "/login");
         usernameField().shouldBe(visible, Duration.ofSeconds(15));
         return this;
     }
 
+    @Step("Ввести логин '{username}'")
     public AdminLoginPage setUsername(String username) {
         usernameField().setValue(username);
         return this;
     }
 
+    @Step("Ввести пароль")
     public AdminLoginPage setPassword(String password) {
         passwordField().setValue(password);
         return this;
     }
 
+    @Step("Клик по кнопке 'Войти'")
     public AdminLoginPage clickLoginButton() {
         loginButton().click();
         return this;
     }
 
+    @Step("Полный вход: логин + пароль + кнопка")
     public AdminLoginPage login(String username, String password) {
         setUsername(username);
         setPassword(password);
@@ -57,7 +56,6 @@ class AdminLoginPage {
         return this;
     }
 
-    // Метод check()
     public AdminLoginPageAssert check() {
         return new AdminLoginPageAssert(this);
     }
