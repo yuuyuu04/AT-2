@@ -1,60 +1,56 @@
 plugins {
     id 'java'
-    id 'io.qameta.allure' version '2.11.2'   // ✅ Allure-плагин
+    id 'io.qameta.allure' version '2.11.2' apply false
 }
 
-group = 'com.example'
-version = '1.0-SNAPSHOT'
+allprojects {
+    group = 'com.example'
+    version = '1.0-SNAPSHOT'
 
-repositories {
-    mavenCentral()
+    repositories {
+        mavenCentral()
+    }
 }
 
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_13
+        targetCompatibility = JavaVersion.VERSION_13
+    }
+
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+        implementation 'org.assertj:assertj-core:3.24.2'
+        implementation 'io.qameta.allure:allure-java-commons:2.24.0'
+    }
+
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+            showStandardStreams = true
+        }
+    }
+}
+
+// ============================================================
+// ЗАВИСИМОСТИ ДЛЯ СТАРОГО src/ (Темы 1-10)
+// ============================================================
 dependencies {
-    // JUnit 5
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-
-    // Selenide
-    implementation 'com.codeborne:selenide:6.19.1'
-
-    // Selenide + Allure
-    implementation 'io.qameta.allure:allure-selenide:2.24.0'
-
-    // REST Assured + Allure
-    implementation 'io.rest-assured:rest-assured:5.5.6'
-    implementation 'io.qameta.allure:allure-rest-assured:2.24.0'
-
-    // AssertJ
-    implementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'com.codeborne:selenide:6.19.1'
+    testImplementation 'io.rest-assured:rest-assured:5.5.6'
+    testImplementation 'io.qameta.allure:allure-junit5:2.24.0'
+    testImplementation 'io.qameta.allure:allure-selenide:2.24.0'
+    testImplementation 'io.qameta.allure:allure-rest-assured:2.24.0'
 }
 
-allure {
-    version = '2.24.0'
-    autoconfigure = true
-    aspectjweaver = true
-    useJUnit5 {
-        version = '2.24.0'
-    }
-}
-
-//  задача с параметрами
-tasks.register('allureServeLocal', Exec) {
+// Задача Smoke-прогона (API + UI)
+tasks.register('smoke') {
     group = 'verification'
-    description = 'Allure serve на localhost:8090'
-
-    //dependsOn test
-
-    commandLine 'allure', 'serve',
-            'build/allure-results',
-            '--host', 'localhost',
-            '--port', '8090'
+    description = 'Smoke-прогон API + UI'
+    dependsOn ':api-tests:apiSmoke', ':ui-tests:uiSmoke'
 }
-
-test {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-        showStandardStreams = true
-    }
-}
-
